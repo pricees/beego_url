@@ -10,6 +10,7 @@ func main() {
 	beego.SetStaticPath("/css", "static/css")
 	beego.SetStaticPath("/js", "static/js")
 
+	beego.Router("/:shorturl:string", &controllers.RedirectController{})
 	beego.Router("/", &controllers.ShortenController{})
 	beego.Run()
 }
