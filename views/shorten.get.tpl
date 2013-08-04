@@ -5,10 +5,10 @@
       <div class="form-group">
         <label for="longurl">Enter a url:</label>
         <input type="text" id="longurl" name="longurl" class="form-control"
-        placeholder="http://google.com" />
+        placeholder="{{.longurl}}" />
       </div>
       <button class="btn btn-defualt" type="submit">Shorten!</button>
     </fieldset>
   </form>
+  <p class="lead">Shortened Url: '{{ .shorturl }}'</p>
 <div>
-'{{ .longurl }}' => '{{ .shorturl }}'

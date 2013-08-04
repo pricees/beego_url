@@ -22,19 +22,8 @@ type ShortenController struct {
 	beego.Controller
 }
 
-  if shortyLookup.IsExist(shorturl) {
-    longy := shortyLookup.Get(shorturl).(string)
-    this.Redirect(longy, 302)
-  } else {
-    this.Redirect("/", 302)
-  }
-}
-
 func storeMe(shorturl string, longurl string) {
-  if shortyLookup.IsExist(shorturl) {
-    longy := shortyLookup.Get(shorturl)
-    beego.Info("'%s' already stored for '%s'", shorturl, longy)
-  } else {
+  if !shortyLookup.IsExist(shorturl) {
     shortyLookup.Put(shorturl, longurl, DONT_EXPIRE)
     shortyLookup.Put(longurl, shorturl, DONT_EXPIRE)
   }
@@ -59,7 +48,7 @@ func (this *ShortenController) Post() {
     storeMe(shorturl, longurl)
   }
 	this.Data["longurl"] = longurl
-	this.Data["shorturl"] = shorturl
+	this.Data["shorturl"] = "http://localhost:8080/" + shorturl
 	this.TplNames = "shorten.get.tpl"
 }
 
@@ -76,5 +65,12 @@ type RedirectController struct {
 }
 
 func (this *RedirectController) Get() {
-  shorturl := this.Ctx.Params["shorturl"]
+  shorturl := this.Ctx.Params[":shorturl"]
 
+  if shortyLookup.IsExist(shorturl) {
+    longy := shortyLookup.Get(shorturl).(string)
+    this.Redirect(longy, 302)
+  } else {
+    this.Redirect("/", 302)
+  }
+}
