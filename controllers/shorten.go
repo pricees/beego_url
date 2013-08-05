@@ -4,6 +4,7 @@ import (
 	"crypto/md5"
 	"encoding/base64"
 	"github.com/astaxie/beego"
+  "fmt"
 )
 
 var (
@@ -16,6 +17,7 @@ func init() {
   shortyLookup = beego.NewBeeCache()
   shortyLookup.Every = DONT_EXPIRE
   shortyLookup.Start()
+  beego.AddFuncMap("printShorties", printShorties)
 }
 
 type ShortenController struct {
@@ -41,6 +43,7 @@ func (this *ShortenController) Post() {
 	longurl := this.GetString("longurl")
   
   var shorturl string
+
   if shortyLookup.IsExist(longurl) {
     shorturl = shortyLookup.Get(longurl).(string)
   } else {
@@ -52,8 +55,18 @@ func (this *ShortenController) Post() {
 	this.TplNames = "shorten.get.tpl"
 }
 
+func printShorties(shortyLookup *beego.BeeCache) string {
+
+  for key, value := range shortyLookup.Items() {
+    fmt.Printf("\n%s => %v", key, value.Access())
+  }
+  return "booty"
+}
+
 func (this *ShortenController) Get() {
 	this.Layout = "layout.html"
+
+  this.Data["shorties"] = shortyLookup
 	this.TplNames = "shorten.get.tpl"
 }
 
